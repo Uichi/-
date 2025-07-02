@@ -1,0 +1,120 @@
+/* .omikuji{ 
+    text-align: center;
+    padding: 20px;
+    border: 5px solid　#666;
+}
+
+.omikuji-headline{
+    margin-bottom: 20px;
+}
+
+.omikuji-result{
+    margin-bottom: 20px;
+}
+
+.omikuji-button{
+    padding: 10px 20px;
+    cursor: pointer;
+}
+body{
+    font-family: "Yu Mincho";
+} */
+ body {
+    font-family: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", "Hiragino Mincho Pro", serif; /* フォントの指定を強化 */
+    background-color: #fce4ec; /* 全体の背景色を淡いピンク系に変更 */
+    display: flex;
+    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center; /* 垂直方向の中央揃え */
+    min-height: 100vh; /* ビューポートの高さに合わせて要素を中央に配置 */
+    margin: 0;
+    padding: 20px; /* 全体の余白 */
+    box-sizing: border-box; /* パディングとボーダーを要素の寸法に含める */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="%23fce4ec"/><circle cx="50" cy="50" r="40" fill="none" stroke="%23ff6666" stroke-width="2" opacity="0.1"/><line x1="10" y1="10" x2="90" y2="90" stroke="%23ff6666" stroke-width="1" opacity="0.05"/><line x1="10" y1="90" x2="90" y2="10" stroke="%23ff6666" stroke-width="1" opacity="0.05"/></svg>'); /* 和柄の背景パターンを追加 (SVGデータURI) */
+    background-size: 80px 80px; /* 背景パターンのサイズ */
+}
+
+.omikuji {
+    text-align: center;
+    padding: 40px; /* パディングを増やす */
+    border: 5px solid #cc0000; /* ボーダーの色を神社を思わせる赤色に変更 */
+    border-radius: 15px; /* 角を丸くする */
+    background-color: #ffffff; /* おみくじコンテナの背景色 */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2); /* 影を強調 */
+    max-width: 500px; /* 最大幅を設定 */
+    width: 100%; /* 幅を100%にする */
+    position: relative; /* 疑似要素のために必要 */
+    overflow: hidden; /* 角丸で背景がはみ出さないように */
+}
+
+/* 神社感を出すための装飾要素（左上） */
+.omikuji::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 60px;
+    height: 60px;
+    background-color: #ffcc00; /* 金色っぽい色 */
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(5px);
+    z-index: -1; /* 他のコンテンツの下に表示 */
+}
+
+/* 神社感を出すための装飾要素（右下） */
+.omikuji::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff9900; /* オレンジっぽい金色 */
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+
+.omikuji-headline {
+    margin-bottom: 30px; /* 下マージンを増やす */
+    color: #8b0000; /* 見出しの色を深みのある赤色に変更 */
+    font-size: 2.8em; /* フォントサイズをさらに大きくする */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* テキストに影を強調 */
+    letter-spacing: 0.1em; /* 文字間隔を広げる */
+}
+
+.omikuji-result img {
+    max-width: 90%; /* 画像を少し小さめに調整 */
+    height: auto; /* 高さを自動調整 */
+    margin-bottom: 35px; /* 下マージンをさらに増やす */
+    border: 3px solid #ff0000; /* 画像のボーダーを赤色に */
+    border-radius: 12px; /* 画像の角を丸くする */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 画像の影を強調 */
+}
+
+.omikuji-button {
+    padding: 18px 40px; /* パディングをさらに増やす */
+    background-color: #cc0000; /* ボタンの背景色を神社らしい赤色に */
+    color: white; /* 文字色 */
+    border: none; /* ボーダーをなくす */
+    border-radius: 10px; /* 角を丸くする */
+    font-size: 1.4em; /* フォントサイズをさらに大きくする */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* ホバー時のアニメーションを追加 */
+    outline: none; /* フォーカス時のアウトラインをなくす */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* ボタンに影を追加 */
+}
+
+.omikuji-button:hover {
+    background-color: #a00000; /* ホバー時の背景色をより濃い赤に */
+    transform: translateY(-5px); /* 少し上に移動するアニメーションを強調 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* ホバー時の影を強調 */
+}
+
+.omikuji-button:active {
+    background-color: #800000; /* クリック時の背景色をさらに濃い赤に */
+    transform: translateY(0); /* クリック時は元に戻す */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* クリック時の影を調整 */
+}
