@@ -1,4 +1,4 @@
-//1.ランダムにおみくじ画像のパスを返す処理
+//1.ランダムにおみくじ画像のパスを返す処理!
 function getRandomImage(){
     const number=Math.floor(Math.random()*7);
     const imagePath ="./" + number.toString() + ".png";
