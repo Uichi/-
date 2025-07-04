@@ -17,29 +17,48 @@ function getRandomImageInfo(){
     };
 }
 
-// ★新規追加: パーティクル生成関数★
+// パーティクル生成関数
 function createParticles(containerElement, count = 20) {
     const particleContainer = document.createElement('div');
     particleContainer.classList.add('particle-container');
-    containerElement.insertBefore(particleContainer, containerElement.firstChild); // omikuji要素の最初の子要素として追加
+    containerElement.insertBefore(particleContainer, containerElement.firstChild);
 
     for (let i = 0; i < count; i++) {
         const particle = document.createElement('div');
         particle.classList.add('particle');
-        const size = Math.random() * 8 + 4; // 4pxから12pxのランダムなサイズ
+        const size = Math.random() * 8 + 4;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
-        particle.style.left = `${Math.random() * 100}%`; // 横方向の開始位置をランダムに
-        particle.style.animationDelay = `${Math.random() * 0.5}s`; // アニメーション開始をずらす
-        particle.style.animationDuration = `${Math.random() * 1 + 1.5}s`; // アニメーション時間をずらす
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 0.5}s`;
+        particle.style.animationDuration = `${Math.random() * 1 + 1.5}s`;
 
         particleContainer.appendChild(particle);
     }
 
-    // アニメーション終了後にパーティクルコンテナを削除
     setTimeout(() => {
         particleContainer.remove();
-    }, 2000); // アニメーション時間に合わせて調整
+    }, 2000);
+}
+
+// ★新規追加: 光の筋生成関数★
+function createLightStreaks(containerElement, count = 10) {
+    const backgroundEffectContainer = document.createElement('div');
+    backgroundEffectContainer.classList.add('background-effect-container');
+    // bodyの最初の子要素として追加し、おみくじボックスの背後になるようにする
+    document.body.insertBefore(backgroundEffectContainer, document.body.firstChild);
+
+    for (let i = 0; i < count; i++) {
+        const streak = document.createElement('div');
+        streak.classList.add('light-streak');
+        streak.style.left = `${Math.random() * 100}%`; // 横方向の開始位置をランダムに
+        streak.style.animationDelay = `${Math.random() * 3}s`; // アニメーション開始をずらす
+        streak.style.animationDuration = `${Math.random() * 2 + 3}s`; // アニメーション時間をずらす
+        backgroundEffectContainer.appendChild(streak);
+    }
+
+    // エフェクト終了（またはリセット時）にコンテナを削除するために、参照を保持しない
+    // playOmikujiの初期化とresetButtonの処理で削除する
 }
 
 
@@ -54,11 +73,17 @@ function playOmikuji(){
 
     resultImage.classList.remove('is-final-result');
     omikujiContainer.classList.remove('show-lights', 'best-result');
+    document.body.classList.remove('best-result-bg'); // ★新規追加: bodyの背景クラスもリセット★
 
     // 既存のパーティクルがあれば削除
     const existingParticles = omikujiContainer.querySelector('.particle-container');
     if (existingParticles) {
         existingParticles.remove();
+    }
+    // ★新規追加: 既存の背景エフェクトがあれば削除★
+    const existingBgEffect = document.body.querySelector('.background-effect-container');
+    if (existingBgEffect) {
+        existingBgEffect.remove();
     }
 
 
@@ -102,7 +127,9 @@ function playOmikuji(){
 
             if (finalOmikujiResult.index === BEST_RESULT_INDEX) {
                 omikujiContainer.classList.add('best-result');
-                createParticles(omikujiContainer, 30); // ★最高の運勢の時にパーティクルを生成★
+                createParticles(omikujiContainer, 30);
+                document.body.classList.add('best-result-bg'); // ★新規追加: bodyに背景クラス追加★
+                createLightStreaks(document.body, 15); // ★新規追加: 光の筋を生成★
             }
 
             resultImage.classList.add('is-final-result');
@@ -149,6 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (existingParticles) {
                 existingParticles.remove();
             }
+            // ★新規追加: リセット時に背景エフェクトも削除★
+            const existingBgEffect = document.body.querySelector('.background-effect-container');
+            if (existingBgEffect) {
+                existingBgEffect.remove();
+            }
+            document.body.classList.remove('best-result-bg'); // ★新規追加: bodyの背景クラスもリセット★
         });
     }
 });
