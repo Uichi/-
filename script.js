@@ -39,27 +39,44 @@ function getRandomImage(){
 }
 
 function playOmikuji(){
+    const bgm = document.getElementById('bgm');
     const drawSound = document.getElementById('draw-sound');
+    const resultImage = document.querySelector("#js-result");
+
+    // 既存のアニメーションクラスをリセット
+    resultImage.classList.remove('is-final-result');
 
     if (drawSound) {
         drawSound.currentTime = 0;
         drawSound.play();
     }
 
-    const timer = setInterval(function(){
-        document.querySelector("#js-result").setAttribute("src",getRandomImage());
-    },100);
+    if (bgm && bgm.paused) {
+        bgm.play().catch(e => console.error("BGM再生エラー:", e));
+    }
 
-    setTimeout(function(){
-        clearInterval(timer);
-    },5000);
+    let intervalCount = 0;
+    const maxIntervals = 20; //2秒で表示
+    const timer = setInterval(function(){
+        resultImage.classList.add('is-changing');
+        setTimeout(() => {
+            resultImage.setAttribute("src", getRandomImage());
+            resultImage.classList.remove('is-changing');
+        }, 50);
+
+        intervalCount++;
+        if (intervalCount >= maxIntervals) {
+            clearInterval(timer);
+            // 最終結果が表示された後にアニメーションクラスを付与
+            resultImage.classList.add('is-final-result');
+        }
+    },100);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const bgm = document.getElementById('bgm');
     const toggleBgmButton = document.getElementById('toggle-bgm-button');
 
-    // BGM ON/OFFボタンのイベントリスナー
     if (toggleBgmButton) {
         toggleBgmButton.addEventListener('click', () => {
             if (bgm.paused) {
@@ -71,6 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
     document.querySelector("#js-button").addEventListener("click", playOmikuji);
 });
+

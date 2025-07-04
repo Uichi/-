@@ -86,7 +86,7 @@ body{
 }
 
 .omikuji-result img {
-    max-width: 90%; /* 画像を少し小さめに調整 */
+    max-width: 65%; /* 画像を少し小さめに調整 */
     height: auto; /* 高さを自動調整 */
     margin-bottom: 35px; /* 下マージンをさらに増やす */
     border: 3px solid #ff0000; /* 画像のボーダーを赤色に */
@@ -114,7 +114,63 @@ body{
 }
 
 .omikuji-button:active {
-    background-color: #800000; /* クリック時の背景色をさらに濃い赤に */
-    transform: translateY(0); /* クリック時は元に戻す */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* クリック時の影を調整 */
+    background-color: #800000;
+    transform: translateY(2px) scale(0.98); /* 少し下に移動して、わずかに縮む */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* クリック時の影を調整 */
 }
+
+/* おみくじ結果画像のアニメーション */
+.omikuji-result img {
+    /* 既存のスタイル */
+    transition: opacity 0.1s ease-in-out; /* 透明度変化にトランジションを追加 */
+    opacity: 1; /* 初期状態の透明度 */
+}
+
+/* 画像が切り替わる瞬間の透明度を制御するクラス (JavaScriptで付与・削除) */
+.omikuji-result img.is-changing {
+    opacity: 0.2; /* 切り替え時に一時的に透明度を下げる */
+}
+
+/* 結果表示後のアニメーション */
+@keyframes result-appear {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.05); /* 少し拡大 */
+        opacity: 1;
+        filter: brightness(1.2); /* 少し明るく */
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+.omikuji-result img.is-final-result {
+    animation: result-appear 0.8s ease-out forwards; /* アニメーション適用 */
+}
+
+/* 光の表現（オプション：複雑になるため、最初は省略しても良い） */
+/* 例えば、結果要素の疑似要素で光を表現することも可能です */
+/* .omikuji-result::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,0,0.5) 20%, transparent 70%);
+    animation: glow-effect 1s ease-out forwards;
+    z-index: 1;
+}
+
+@keyframes glow-effect {
+    0% { width: 0; height: 0; opacity: 0; }
+    100% { width: 200px; height: 200px; opacity: 1; }
+} */
