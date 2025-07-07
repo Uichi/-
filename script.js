@@ -56,13 +56,10 @@ function createLightStreaks(containerElement, count = 10) {
         streak.style.animationDuration = `${Math.random() * 2 + 3}s`; // アニメーション時間をずらす
         backgroundEffectContainer.appendChild(streak);
     }
-
-    // エフェクト終了（またはリセット時）にコンテナを削除するために、参照を保持しない
-    // playOmikujiの初期化とresetButtonの処理で削除する
 }
 
-
-function playOmikuji(){
+// isBgmEnabledを引数として受け取るように修正
+function playOmikuji(isBgmEnabled){
     const bgm = document.getElementById('bgm');
     const drawSound = document.getElementById('draw-sound');
     const resultImage = document.querySelector("#js-result");
@@ -73,14 +70,12 @@ function playOmikuji(){
 
     resultImage.classList.remove('is-final-result');
     omikujiContainer.classList.remove('show-lights', 'best-result');
-    document.body.classList.remove('best-result-bg'); // ★新規追加: bodyの背景クラスもリセット★
+    document.body.classList.remove('best-result-bg');
 
-    // 既存のパーティクルがあれば削除
     const existingParticles = omikujiContainer.querySelector('.particle-container');
     if (existingParticles) {
         existingParticles.remove();
     }
-    // ★新規追加: 既存の背景エフェクトがあれば削除★
     const existingBgEffect = document.body.querySelector('.background-effect-container');
     if (existingBgEffect) {
         existingBgEffect.remove();
@@ -92,7 +87,8 @@ function playOmikuji(){
         drawSound.play();
     }
 
-    if (bgm && bgm.paused) {
+    // BGMの再生条件を修正
+    if (isBgmEnabled && bgm.paused) {
         bgm.play().catch(e => console.error("BGM再生エラー:", e));
     }
 
@@ -128,8 +124,8 @@ function playOmikuji(){
             if (finalOmikujiResult.index === BEST_RESULT_INDEX) {
                 omikujiContainer.classList.add('best-result');
                 createParticles(omikujiContainer, 30);
-                document.body.classList.add('best-result-bg'); // ★新規追加: bodyに背景クラス追加★
-                createLightStreaks(document.body, 15); // ★新規追加: 光の筋を生成★
+                document.body.classList.add('best-result-bg');
+                createLightStreaks(document.body, 15);
             }
 
             resultImage.classList.add('is-final-result');
@@ -143,13 +139,16 @@ function playOmikuji(){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    let isBgmEnabled = false; // BGMの状態を管理するフラグ
     const bgm = document.getElementById('bgm');
     const toggleBgmButton = document.getElementById('toggle-bgm-button');
     const resetButton = document.getElementById('reset-button');
 
     if (toggleBgmButton) {
+        // BGMボタンのクリック処理を修正
         toggleBgmButton.addEventListener('click', () => {
-            if (bgm.paused) {
+            isBgmEnabled = !isBgmEnabled; // 状態を反転
+            if (isBgmEnabled) {
                 bgm.play().catch(e => console.error("BGM再生エラー:", e));
                 toggleBgmButton.textContent = "BGM OFF";
             } else {
@@ -162,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#js-result").setAttribute("src", "./omikuzi.png");
     document.querySelector("#js-result").setAttribute("alt", "おみくじの箱");
 
-    document.querySelector("#js-button").addEventListener("click", playOmikuji);
+    // playOmikujiに関数の引数としてisBgmEnabledを渡すように修正
+    document.querySelector("#js-button").addEventListener("click", () => playOmikuji(isBgmEnabled));
 
     if (resetButton) {
         resetButton.addEventListener('click', () => {
@@ -171,17 +171,17 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector(".omikuji").classList.remove('show-lights', 'best-result');
             document.querySelector("#js-result").classList.remove('is-final-result');
             document.querySelector("#js-button").disabled = false;
-            // リセット時にもパーティクルコンテナがあれば削除
+            
             const existingParticles = document.querySelector('.omikuji .particle-container');
             if (existingParticles) {
                 existingParticles.remove();
             }
-            // ★新規追加: リセット時に背景エフェクトも削除★
+            
             const existingBgEffect = document.body.querySelector('.background-effect-container');
             if (existingBgEffect) {
                 existingBgEffect.remove();
             }
-            document.body.classList.remove('best-result-bg'); // ★新規追加: bodyの背景クラスもリセット★
+            document.body.classList.remove('best-result-bg');
         });
     }
 });
